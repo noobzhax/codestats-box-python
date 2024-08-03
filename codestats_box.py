@@ -81,19 +81,18 @@ XP_TO_LEVEL = lambda xp: math.floor(0.025 * math.sqrt(xp))
 
 def validate_and_init() -> bool:
     """Check environment variables present and valid."""
-    env_vars_absent = [
+    if env_vars_absent := [
         env
         for env in REQUIRED_ENVS
         if env not in os.environ or len(os.environ[env]) == 0
-    ]
-    if env_vars_absent:
+    ]:
         print(f"Please define {env_vars_absent} in your github secrets. Aborting...")
         return False
 
-    if not (
-        ENV_VAR_STATS_TYPE in os.environ
-        and len(os.environ[ENV_VAR_STATS_TYPE]) > 0
-        and os.environ[ENV_VAR_STATS_TYPE] in ALLOWED_STATS_TYPES
+    if (
+        ENV_VAR_STATS_TYPE not in os.environ
+        or len(os.environ[ENV_VAR_STATS_TYPE]) <= 0
+        or os.environ[ENV_VAR_STATS_TYPE] not in ALLOWED_STATS_TYPES
     ):
         print(f"Using default stats type: {DEFAULT_STATS_TYPE}")
         os.environ[ENV_VAR_STATS_TYPE] = DEFAULT_STATS_TYPE
